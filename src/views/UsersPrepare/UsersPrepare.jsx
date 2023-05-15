@@ -29,7 +29,7 @@ export function UsersPrepare () {
         sendMessages()
       }
     }
-  }, [])
+  }, [users])
 
   const debouncedHandler = debounce((callback, value) => { dispatch(callback(value)) }, 300)
 
