@@ -19,13 +19,12 @@ export function UsersPrepare () {
   const users = useSelector(state => state.appSlice.users)
   const message = useSelector(state => state.appSlice.message)
   const usersIsFetching = useSelector(state => state.appSlice.usersIsFetching)
-
   useEffect(() => {
     if (users.length) {
       navigate('/inProgress')
       sendMessages()
     }
-  })
+  }, [])
 
   const debouncedHandler = debounce((callback, value) => { dispatch(callback(value)) }, 300)
 
