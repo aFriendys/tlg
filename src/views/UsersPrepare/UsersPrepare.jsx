@@ -23,8 +23,8 @@ export function UsersPrepare () {
   let running = false
   useEffect(() => {
     if (!running) {
-      running = true
       if (users.length) {
+        running = true
         navigate('/inProgress')
         sendMessages()
       }
