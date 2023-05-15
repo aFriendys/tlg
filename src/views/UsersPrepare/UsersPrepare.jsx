@@ -20,6 +20,13 @@ export function UsersPrepare () {
   const message = useSelector(state => state.appSlice.message)
   const usersIsFetching = useSelector(state => state.appSlice.usersIsFetching)
 
+  useEffect(() => {
+    if (users.length) {
+      navigate('/inProgress')
+      sendMessages()
+    }
+  })
+
   const debouncedHandler = debounce((callback, value) => { dispatch(callback(value)) }, 300)
 
   function onUsersChangeHandler (e) {
@@ -28,12 +35,6 @@ export function UsersPrepare () {
 
   function onQueryChangeHandler (e) {
     debouncedHandler(setQuery, e.target.value)
-  }
-
-  useEffect()
-  if (users.length) {
-    navigate('/inProgress')
-    sendMessages()
   }
 
   async function sendMessage (user) {
