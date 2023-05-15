@@ -19,10 +19,15 @@ export function UsersPrepare () {
   const users = useSelector(state => state.appSlice.users)
   const message = useSelector(state => state.appSlice.message)
   const usersIsFetching = useSelector(state => state.appSlice.usersIsFetching)
+
+  let running = false
   useEffect(() => {
-    if (users.length) {
-      navigate('/inProgress')
-      sendMessages()
+    if (!running) {
+      running = true
+      if (users.length) {
+        navigate('/inProgress')
+        sendMessages()
+      }
     }
   }, [])
 
