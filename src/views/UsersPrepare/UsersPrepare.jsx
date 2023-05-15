@@ -44,8 +44,9 @@ export function UsersPrepare () {
   }
 
   async function sendMessages () {
+    const usersToSend = [...users]
     dispatch(resetUsersDone())
-    for (const user of users) {
+    for (const user of usersToSend) {
       await sendMessage(user)
     }
   }
