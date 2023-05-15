@@ -1,0 +1,25 @@
+.section{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+    max-width: 500px;
+}
+
+.inputWrapper{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+
+    &Password{
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+
+        &>span{
+            padding: 0 10px;
+        }
+    }
+}
