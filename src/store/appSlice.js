@@ -5,8 +5,8 @@ import { telegramClient } from '../api'
 export const setUsers = createAsyncThunk('appSlice/setUsers', async (query) => {
   const users = []
 
-  const channels = query.trim().split(' ').filter(query => query.endsWith(':channel')).map(query => query.replace(':channel', ''))
-  users.push(...query.trim().split(' ').filter(query => !query.endsWith(':channel')))
+  const channels = query.trim().split(' ').filter(query => query.startsWith('https://t.me/')).map(query => query.replace('https://t.me/', ''))
+  users.push(...query.trim().split(' ').filter(query => !query.startsWith('https://t.me/') && !query.startsWith('+') && isNaN(Number(query))))
   for (const channel of channels) {
     users.push(...await telegramClient.getChannelParticipants(channel))
   }

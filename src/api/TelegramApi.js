@@ -18,13 +18,22 @@ class TelegramApi {
       phoneCode: codeCallback
     })
       .then(() => { this.client.session.save() }).catch((e) => {
-        console.log('AN ERROR HAS HAPPENED')
         console.log(e.toString())
       })
   }
 
   async sendMessage (user, message) {
-    await this.client.sendMessage(user, { message })
+    try {
+      await this.client.invoke(
+        new Api.messages.SendMessage({
+          peer: user,
+          message
+        }
+        )
+      )
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   async getChannelParticipants (channel, offset = 0) {
@@ -39,9 +48,13 @@ class TelegramApi {
       }))
 
     for (const user of result.users) {
+      console.log(user)
       let info = 'no info'
-      if (user.username !== null || user.phone !== null) {
-        info = user.username === null ? user.phone : `@${user.username}`
+      if (user.username !== null
+      //  || user.phone !== null
+      ) {
+        info = user.username
+        // info = user.username === null ? user.phone : `@${user.username}`
       }
 
       usersResult.push(info)

@@ -81,7 +81,7 @@ export function AuthView (): JSX.Element {
               Insert
             </Button>
           </Space.Compact>
-          <Text type="danger">*Required via 2fa</Text>
+          <Text type='warning'>*Required via 2fa</Text>
         </div>
         <Space.Compact>
           <Input placeholder="Code" size="large" ref={codeInputRef}/>

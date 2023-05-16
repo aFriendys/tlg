@@ -12,14 +12,4 @@
     flex-direction: column;
     gap: 15px;
     width: 100%;
-
-    &Users{
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-
-        &>span{
-            padding: 0 10px;
-        }
-    }
 }
