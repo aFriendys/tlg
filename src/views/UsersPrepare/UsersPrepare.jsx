@@ -1,6 +1,6 @@
 import styles from './UsersPrepare.module.scss'
 
-import { setUsers, setMessage, setQuery, pushUsersDone, resetUsersDone, shiftUser } from '../../store/appSlice'
+import { setUsers, setMessage, setQuery, pushUsersDone, resetUsersDone, shiftUser, pushUsersError } from '../../store/appSlice'
 import { debounce } from 'lodash'
 
 import { Input, Button } from 'antd'
@@ -38,18 +38,35 @@ export function UsersPrepare () {
     debouncedHandler(setQuery, e.target.value)
   }
 
+  function sleep (ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
+
   async function sendMessage (user) {
     dispatch(shiftUser())
-    await telegramClient.sendMessage(user, message)
-    dispatch(pushUsersDone(user))
+    try {
+      await sleep(300)
+      await telegramClient.sendMessage(user, message)
+      dispatch(pushUsersDone(user))
+    } catch {
+      dispatch(pushUsersError(user))
+      return false
+    }
+    return true
   }
 
   async function sendMessages () {
+    let messagesSent = 0
     const usersToSend = [...users]
     dispatch(resetUsersDone())
     for (const user of usersToSend) {
-      await sendMessage(user)
+      const result = await sendMessage(user)
+      console.log(result)
+      if (result) {
+        messagesSent = messagesSent + 1
+      }
     }
+    console.log(messagesSent)
   }
 
   return (

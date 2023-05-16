@@ -23,11 +23,13 @@
     }
 }
 
-.input{
-    color: red;
-
-    &:last-child{
+.doneWrapper{
+    .input{
         color: green;
+
+        &:last-child{
+            color: red;
+        }
     }
 }
 
