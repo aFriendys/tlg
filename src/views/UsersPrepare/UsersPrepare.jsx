@@ -61,7 +61,6 @@ export function UsersPrepare () {
     dispatch(resetUsersDone())
     for (const user of usersToSend) {
       const result = await sendMessage(user)
-      console.log(result)
       if (result) {
         messagesSent = messagesSent + 1
       }
