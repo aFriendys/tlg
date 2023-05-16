@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { useNavigate } from 'react-router-dom'
 import { telegramClient } from '../../api'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 const { TextArea } = Input
 const { Text } = Typography
 
@@ -19,15 +19,13 @@ export function UsersPrepare () {
   const users = useSelector(state => state.appSlice.users)
   const message = useSelector(state => state.appSlice.message)
   const usersIsFetching = useSelector(state => state.appSlice.usersIsFetching)
+  const running = useRef(false)
 
-  let running = false
   useEffect(() => {
-    if (!running) {
-      if (users.length) {
-        running = true
-        navigate('/inProgress')
-        sendMessages()
-      }
+    if (!running.current && users.length) {
+      running.current = true
+      navigate('/inProgress')
+      sendMessages()
     }
   }, [users])
 
