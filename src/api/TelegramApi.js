@@ -3,24 +3,33 @@ import { StringSession } from 'telegram/sessions'
 
 class TelegramApi {
   constructor () {
-    this.client = undefined
     this.session = new StringSession('')
   }
 
-  createClient (apiId, apiHash) {
-    this.client = new TelegramClient(this.session, Number(apiId), apiHash, { connectionRetries: 3 })
+  async createClient (apiId, apiHash) {
+    this.apiId = Number(apiId)
+    this.apiHash = apiHash
+    this.client = new TelegramClient(this.session, this.apiId, this.apiHash, { connectionRetries: 3 })
+    await this.client.connect()
   }
 
-  startClient (phoneCallback, passwordCallback, codeCallback) {
-    this.client.start({
-      phoneNumber: phoneCallback,
-      password: passwordCallback,
-      phoneCode: codeCallback
+  async sendCode (phone) {
+    await this.client.sendCode({
+      apiId: this.apiId,
+      apiHash: this.apiHash
+    }, phone)
+  }
+
+  async startClient (phoneNumber, password, phoneCode) {
+    await this.client.start({
+      phoneNumber,
+      password,
+      phoneCode: () => { return new Promise(resolve => { resolve(phoneCode) }) }
     })
       .then(() => {
         this.client.session.save()
       }).catch((e) => {
-        console.log(e.toString())
+        console.log('ERROR', e.toString())
       })
   }
 

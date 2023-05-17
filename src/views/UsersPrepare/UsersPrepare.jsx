@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { telegramClient } from '../../api'
 import { useEffect, useRef } from 'react'
+import { sleep } from '../../functions/functions'
 const { TextArea } = Input
 
 export function UsersPrepare () {
@@ -36,10 +37,6 @@ export function UsersPrepare () {
 
   function onQueryChangeHandler (e) {
     debouncedHandler(setQuery, e.target.value)
-  }
-
-  function sleep (ms) {
-    return new Promise(resolve => setTimeout(resolve, ms))
   }
 
   async function sendMessage (user) {
