@@ -21,7 +21,8 @@ const appSlice = createSlice({
     users: [],
     usersDone: [],
     usersError: [],
-    usersIsFetching: false
+    usersIsFetching: false,
+    user: { name: '' }
   },
   reducers: {
     setMessage: (state, action) => {
@@ -47,6 +48,10 @@ const appSlice = createSlice({
     },
     resetUsersDone: state => {
       state.usersDone = []
+    },
+
+    setUser: (state, action) => {
+      state.user = action.payload
     }
 
   },
@@ -63,4 +68,4 @@ const appSlice = createSlice({
 })
 
 export default appSlice.reducer
-export const { setMessage, setQuery, shiftUser, pushUsersDone, resetUsersDone, pushUsersError } = appSlice.actions
+export const { setMessage, setQuery, shiftUser, pushUsersDone, resetUsersDone, pushUsersError, setUser } = appSlice.actions

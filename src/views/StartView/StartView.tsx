@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+/* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-confusing-void-expression */
 /* eslint-disable @typescript-eslint/no-misused-promises */
@@ -9,9 +11,12 @@ import { telegramClient } from '../../api'
 
 import styles from './StartView.module.scss'
 import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { setUser } from '../../store/appSlice'
+import { useDispatch } from 'react-redux'
 
 export function StartView (): JSX.Element {
+  const dispatch = useDispatch()
   const [apiId, setApiId] = useLocalStorage('apiId', '')
   const [apiHash, setApiHash] = useLocalStorage('apiHash', '')
   const [phone, setPhone] = useLocalStorage('phone', '')
@@ -24,6 +29,18 @@ export function StartView (): JSX.Element {
     await telegramClient.sendCode(phone)
     setModalIsOpen(() => true)
   }
+
+  useEffect(() => {
+    (
+      async () => {
+        const [connected, { firstName }] = await telegramClient.tryToStartClient()
+        if (connected) {
+          dispatch(setUser({ name: firstName }))
+          navigate('/prepare')
+        }
+      }
+    )()
+  }, [])
 
   return (
     <>
@@ -84,7 +101,8 @@ export function StartView (): JSX.Element {
           onChange={(e) => setCode(e.target.value)}
         />
       <Button style={{ width: '100%' }} type="primary" onClick={async () => {
-        await telegramClient.startClient(phone, password, code)
+        const user: any = await telegramClient.startClient(phone, password, code)
+        dispatch(setUser({ name: user.firstName }))
         navigate('/prepare')
       }}>
             Insert
