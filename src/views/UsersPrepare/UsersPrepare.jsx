@@ -67,11 +67,11 @@ export function UsersPrepare () {
 
   return (
     <section className={styles.section}>
-      <h2>Finally, fill remaining fields</h2>
+      <h2>Заполните оставшиеся поля</h2>
       <div className={styles.inputWrapper}>
-        <TextArea placeholder="Message" autoSize={{ minRows: 2, maxRows: 6 }} onChange={onUsersChangeHandler} />
-        <TextArea placeholder="Users or Channels" autoSize={{ minRows: 2, maxRows: 6 }} onChange={onQueryChangeHandler} />
-        <Button type='primary' onClick={() => dispatch(setUsers(query))} disabled={usersIsFetching} loading={usersIsFetching}>Send messages</Button>
+        <TextArea placeholder="Сообщение" autoSize={{ minRows: 2, maxRows: 6 }} onChange={onUsersChangeHandler} />
+        <TextArea placeholder="Пользователи / каналы" autoSize={{ minRows: 2, maxRows: 6 }} onChange={onQueryChangeHandler} />
+        <Button type='primary' onClick={() => dispatch(setUsers(query))} disabled={usersIsFetching} loading={usersIsFetching}>Отправить сообщения</Button>
       </div>
     </section>
   )

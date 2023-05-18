@@ -13,8 +13,8 @@ export function Header () {
 
   return (
         <header className={styles.header} key='header'>
-          <span>Hello, {name}!</span>
-            <Button onClick={onLogoutHandler}>Logout</Button>
+          <span>Привет, {name}!</span>
+            <Button onClick={onLogoutHandler}>Выйти</Button>
         </header>
   )
 }

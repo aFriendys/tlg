@@ -16,7 +16,7 @@ export function UsersInProgress () {
 
   return (
     <section className={styles.section}>
-      <h2>Sending messages</h2>
+      <h2>Сообщения отправляются</h2>
       <div className={styles.inputWrapper}>
         <div className={styles.inputWrapperTextarea}>
           <TextArea
@@ -50,7 +50,7 @@ export function UsersInProgress () {
             navigate('/prepare')
           }}
         >
-          Back
+          Назад
         </Button>
       </div>
     </section>

@@ -1,15 +1,18 @@
 .section{
     display: flex;
-    align-items: center;
     flex-direction: column;
     gap: 30px;
     width: 100%;
     max-width: 500px;
+
+    h2{
+        text-align: center;
+    }
 }
 
 .inputWrapper{
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
     width: 100%;
 }

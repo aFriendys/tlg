@@ -46,10 +46,10 @@ export function StartView (): JSX.Element {
     <>
     <section className={styles.section}>
       <h2>
-        Register your app <a href="https://my.telegram.org/apps" target="_blank" rel="noreferrer">here</a> and insert below
+        Зарегистрируйте приложение <a href="https://my.telegram.org/apps" target="_blank" rel="noreferrer">тут</a> и введите данные ниже
       </h2>
       <div className={styles.inputWrapper}>
-        <h3>App info</h3>
+        <h3>Приложение</h3>
         <Input
           size="large"
           placeholder="App id"
@@ -64,16 +64,17 @@ export function StartView (): JSX.Element {
         />
       </div>
       <div className={styles.inputWrapper}>
-        <h3>User info</h3>
+        <h3>Пользователь
+        </h3>
         <Input
           size="large"
-          placeholder="Phone number"
+          placeholder="Номер телефона"
           value={phone}
-          onChange={(e) => setPhone(e.target.value)}
+          onChange={(e) => setPhone(e.target.value.replaceAll(' ', ''))}
         />
         <Input
           size="large"
-          placeholder="Password"
+          placeholder="Пароль"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
@@ -83,12 +84,12 @@ export function StartView (): JSX.Element {
         style={{ width: '100%' }}
         onClick={onSubmitHandler}
       >
-        Insert
+        Войти
       </Button>
     </section>
     <Modal
     centered
-    title="Insert verification code"
+    title="Введите код подтверждения"
     open={modalIsOpen}
     footer={null}
     onCancel={() => setModalIsOpen(() => false)}
@@ -96,7 +97,7 @@ export function StartView (): JSX.Element {
     <div className={styles.inputWrapper} style={{ marginTop: '30px' }}>
     <Input
           size="large"
-          placeholder="Verification code"
+          placeholder="Код подтверждения"
           value={code}
           onChange={(e) => setCode(e.target.value)}
         />
@@ -105,7 +106,7 @@ export function StartView (): JSX.Element {
         dispatch(setUser({ name: user.firstName }))
         navigate('/prepare')
       }}>
-            Insert
+            Отправить
           </Button>
       </div>
   </Modal>
