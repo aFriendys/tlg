@@ -38,6 +38,7 @@ class TelegramApi {
   }
 
   async startClient (phoneNumber, password, phoneCode) {
+    let userInfo = {}
     await this.client.start({
       phoneNumber,
       password,
@@ -48,12 +49,16 @@ class TelegramApi {
       }).catch((e) => {
         console.log('ERROR', e.toString())
       })
-    const userInfo = await this.client.invoke(
-      new Api.users.GetFullUser({
-        id: 'me'
-      })
-    )
-    return userInfo.users[0]
+    try {
+      userInfo = await this.client.invoke(
+        new Api.users.GetFullUser({
+          id: 'me'
+        })
+      )
+    } catch {
+      return [false, userInfo]
+    }
+    return [true, userInfo.users[0]]
   }
 
   async sendMessage (user, message) {

@@ -22,36 +22,41 @@ const appSlice = createSlice({
     usersDone: [],
     usersError: [],
     usersIsFetching: false,
-    user: { name: '' }
+    user: { name: '' },
+    inProgress: true
   },
   reducers: {
-    setMessage: (state, action) => {
-      state.message = action.payload
+    setInProgress: (state, { payload }) => {
+      state.inProgress = payload
     },
-    setQuery: (state, action) => {
-      state.query = action.payload
+    setMessage: (state, { payload }) => {
+      state.message = payload
+    },
+    setQuery: (state, { payload }) => {
+      state.query = payload
     },
     shiftUser: (state) => {
       const newUsers = [...state.users]
       newUsers.shift()
       state.users = newUsers
     },
-    pushUsersDone: (state, action) => {
+    pushUsersDone: (state, { payload }) => {
       const newUsers = [...state.usersDone]
-      newUsers.push(action.payload)
+      newUsers.push(payload)
       state.usersDone = newUsers
     },
-    pushUsersError: (state, action) => {
+    pushUsersError: (state, { payload }) => {
       const newUsers = [...state.usersError]
-      newUsers.push(action.payload)
+      newUsers.push(payload)
       state.usersError = newUsers
     },
     resetUsersDone: state => {
       state.usersDone = []
+      state.usersError = []
     },
 
-    setUser: (state, action) => {
-      state.user = action.payload
+    setUser: (state, { payload }) => {
+      state.user = payload
     }
 
   },
@@ -59,13 +64,13 @@ const appSlice = createSlice({
     [setUsers.pending]: (state) => {
       state.usersIsFetching = true
     },
-    [setUsers.fulfilled]: (state, action) => {
+    [setUsers.fulfilled]: (state, { payload }) => {
       state.query = ''
-      state.users = action.payload
+      state.users = payload
       state.usersIsFetching = false
     }
   }
 })
 
 export default appSlice.reducer
-export const { setMessage, setQuery, shiftUser, pushUsersDone, resetUsersDone, pushUsersError, setUser } = appSlice.actions
+export const { setMessage, setQuery, shiftUser, pushUsersDone, resetUsersDone, pushUsersError, setUser, setInProgress } = appSlice.actions

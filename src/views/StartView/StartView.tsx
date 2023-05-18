@@ -12,8 +12,9 @@ import { telegramClient } from '../../api'
 import styles from './StartView.module.scss'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { setUser } from '../../store/appSlice'
-import { useDispatch } from 'react-redux'
+import { setInProgress, setUser } from '../../store/appSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { applyMiddleware } from 'redux'
 
 export function StartView (): JSX.Element {
   const dispatch = useDispatch()
@@ -24,92 +25,124 @@ export function StartView (): JSX.Element {
   const [code, setCode] = useState('')
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const navigate = useNavigate()
+  const inProgress = useSelector((state: any) => state.appSlice.inProgress)
   const onSubmitHandler = async (e: React.SyntheticEvent): Promise<any> => {
+    dispatch(setInProgress(true))
     await telegramClient.createClient(apiId, apiHash)
     await telegramClient.sendCode(phone)
     setModalIsOpen(() => true)
   }
 
   useEffect(() => {
-    (
-      async () => {
-        const [connected, { firstName }] = await telegramClient.tryToStartClient()
-        if (connected) {
-          dispatch(setUser({ name: firstName }))
-          navigate('/prepare')
-        }
+    (async () => {
+      const [connected, { firstName }] =
+        await telegramClient.tryToStartClient()
+      if (connected) {
+        dispatch(setUser({ name: firstName }))
+        navigate('/prepare')
       }
-    )()
+    })()
+    dispatch(setInProgress(false))
   }, [])
 
   return (
     <>
-    <section className={styles.section}>
-      <h2>
-        Зарегистрируйте приложение <a href="https://my.telegram.org/apps" target="_blank" rel="noreferrer">тут</a> и введите данные ниже
-      </h2>
-      <div className={styles.inputWrapper}>
-        <h3>Приложение</h3>
-        <Input
-          size="large"
-          placeholder="App id"
-          value={apiId}
-          onChange={(e) => setApiId(e.target.value)}
-        />
-        <Input
-          size="large"
-          placeholder="App hash"
-          value={apiHash}
-          onChange={(e) => setApiHash(e.target.value)}
-        />
-      </div>
-      <div className={styles.inputWrapper}>
-        <h3>Пользователь
-        </h3>
-        <Input
-          size="large"
-          placeholder="Номер телефона"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value.replaceAll(' ', ''))}
-        />
-        <Input
-          size="large"
-          placeholder="Пароль"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
-      <Button
-        type="primary"
-        style={{ width: '100%' }}
-        onClick={onSubmitHandler}
+      <section className={styles.section}>
+        <h2>
+          Зарегистрируйте приложение{' '}
+          <a
+            href="https://my.telegram.org/apps"
+            target="_blank"
+            rel="noreferrer"
+          >
+            тут
+          </a>{' '}
+          и введите данные ниже
+        </h2>
+        <div className={styles.inputWrapper}>
+          <h3>Приложение</h3>
+          <Input
+            size="large"
+            placeholder="App id"
+            value={apiId}
+            onChange={(e) => setApiId(e.target.value)}
+          />
+          <Input
+            size="large"
+            placeholder="App hash"
+            value={apiHash}
+            onChange={(e) => setApiHash(e.target.value)}
+          />
+        </div>
+        <div className={styles.inputWrapper}>
+          <h3>Пользователь</h3>
+          <Input
+            size="large"
+            placeholder="Номер телефона"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value.replaceAll(' ', ''))}
+          />
+          <Input
+            size="large"
+            placeholder="Пароль"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <Button
+          type="primary"
+          style={{ width: '100%' }}
+          onClick={onSubmitHandler}
+          disabled={
+            !apiId.length || !apiHash.length || !phone.length || inProgress
+          }
+          loading={inProgress}
+        >
+          Войти
+        </Button>
+      </section>
+      <Modal
+        centered
+        title="Введите код подтверждения"
+        open={modalIsOpen}
+        footer={null}
+        afterClose={() => {
+          dispatch(setInProgress(false))
+        }}
+        onCancel={() => {
+          setModalIsOpen(() => false)
+        }}
       >
-        Войти
-      </Button>
-    </section>
-    <Modal
-    centered
-    title="Введите код подтверждения"
-    open={modalIsOpen}
-    footer={null}
-    onCancel={() => setModalIsOpen(() => false)}
-  >
-    <div className={styles.inputWrapper} style={{ marginTop: '30px' }}>
-    <Input
-          size="large"
-          placeholder="Код подтверждения"
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-        />
-      <Button style={{ width: '100%' }} type="primary" onClick={async () => {
-        const user: any = await telegramClient.startClient(phone, password, code)
-        dispatch(setUser({ name: user.firstName }))
-        navigate('/prepare')
-      }}>
+        <div className={styles.inputWrapper} style={{ marginTop: '30px' }}>
+          <Input
+            size="large"
+            placeholder="Код подтверждения"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+          />
+          <Button
+            style={{ width: '100%' }}
+            type="primary"
+            onClick={async () => {
+              const [connected, { firstName }] = await telegramClient.startClient(
+                phone,
+                password,
+                code
+              )
+              if (connected) {
+                dispatch(setUser({ name: firstName }))
+                navigate('/prepare')
+              } else {
+                setModalIsOpen(() => false)
+                dispatch(setInProgress(false))
+              }
+            }}
+            disabled={!code.length}
+          >
             Отправить
           </Button>
-      </div>
-  </Modal>
-  </>
+        </div>
+      </Modal>
+    </>
   )
 }
