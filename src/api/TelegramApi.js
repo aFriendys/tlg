@@ -27,6 +27,7 @@ class TelegramApi {
     } catch {
       return [false, userInfo]
     }
+
     return [true, userInfo.users[0]]
   }
 

@@ -14,15 +14,13 @@ export const setUsers = createAsyncThunk('appSlice/setUsers', async (query) => {
 })
 
 const appSlice = createSlice({
-  name: 'appSlice',
+  name: 'app',
   initialState: {
     message: '',
     query: '',
     users: [],
     usersDone: [],
     usersError: [],
-    usersIsFetching: false,
-    user: { name: '' },
     inProgress: true
   },
   reducers: {
@@ -53,24 +51,20 @@ const appSlice = createSlice({
     resetUsersDone: state => {
       state.usersDone = []
       state.usersError = []
-    },
-
-    setUser: (state, { payload }) => {
-      state.user = payload
     }
 
   },
   extraReducers: {
     [setUsers.pending]: (state) => {
-      state.usersIsFetching = true
+      state.inProgress = true
     },
     [setUsers.fulfilled]: (state, { payload }) => {
       state.query = ''
       state.users = payload
-      state.usersIsFetching = false
+      state.inProgress = false
     }
   }
 })
 
-export default appSlice.reducer
-export const { setMessage, setQuery, shiftUser, pushUsersDone, resetUsersDone, pushUsersError, setUser, setInProgress } = appSlice.actions
+export default appSlice
+export const { setMessage, setQuery, shiftUser, pushUsersDone, resetUsersDone, pushUsersError, setInProgress } = appSlice.actions

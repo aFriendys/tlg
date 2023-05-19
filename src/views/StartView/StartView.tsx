@@ -12,7 +12,8 @@ import { telegramClient } from '../../api'
 import styles from './StartView.module.scss'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { setInProgress, setUser } from '../../store/appSlice'
+import { setInProgress } from '../../store/appSlice'
+import { setUserName } from '../../store/userSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { applyMiddleware } from 'redux'
 
@@ -25,7 +26,7 @@ export function StartView (): JSX.Element {
   const [code, setCode] = useState('')
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const navigate = useNavigate()
-  const inProgress = useSelector((state: any) => state.appSlice.inProgress)
+  const inProgress = useSelector(({ app }: { app: any }) => app.inProgress)
   const onSubmitHandler = async (e: React.SyntheticEvent): Promise<any> => {
     dispatch(setInProgress(true))
     await telegramClient.createClient(apiId, apiHash)
@@ -38,7 +39,7 @@ export function StartView (): JSX.Element {
       const [connected, { firstName }] =
         await telegramClient.tryToStartClient()
       if (connected) {
-        dispatch(setUser({ name: firstName }))
+        dispatch(setUserName(firstName))
         navigate('/prepare')
       }
     })()
@@ -130,7 +131,7 @@ export function StartView (): JSX.Element {
                 code
               )
               if (connected) {
-                dispatch(setUser({ name: firstName }))
+                dispatch(setUserName(firstName))
                 navigate('/prepare')
               } else {
                 setModalIsOpen(() => false)

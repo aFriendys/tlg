@@ -5,7 +5,7 @@ import styles from './Header.module.scss'
 
 export function Header () {
   const navigate = useNavigate()
-  const { name } = useSelector(state => state.appSlice.user)
+  const name = useSelector(({ user }) => user.name)
   function onLogoutHandler () {
     localStorage.removeItem('session')
     navigate('/')

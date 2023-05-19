@@ -15,10 +15,10 @@ const { TextArea } = Input
 export function UsersPrepare () {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const query = useSelector(state => state.appSlice.query)
-  const users = useSelector(state => state.appSlice.users)
-  const message = useSelector(state => state.appSlice.message)
-  const usersIsFetching = useSelector(state => state.appSlice.usersIsFetching)
+  const query = useSelector(({ app }) => app.query)
+  const users = useSelector(({ app }) => app.users)
+  const message = useSelector(({ app }) => app.message)
+  const inProgress = useSelector(({ app }) => app.inProgress)
   const running = useRef(false)
 
   useEffect(() => {
@@ -54,15 +54,21 @@ export function UsersPrepare () {
 
   async function sendMessages () {
     let messagesSent = 0
+    let messagesError = 0
     const usersToSend = [...users]
     dispatch(resetUsersDone())
     for (const user of usersToSend) {
       const result = await sendMessage(user)
       if (result) {
-        messagesSent = messagesSent + 1
+        messagesSent++
+      } else {
+        messagesError++
       }
     }
-    console.log(messagesSent)
+    console.group('Результат отправки сообщений')
+    console.log('Отправлено сообщений:', messagesSent)
+    console.log('Не отправлено сообщений:', messagesError)
+    console.groupEnd()
   }
 
   return (
@@ -71,7 +77,7 @@ export function UsersPrepare () {
       <div className={styles.inputWrapper}>
         <TextArea placeholder="Сообщение" autoSize={{ minRows: 2, maxRows: 6 }} onChange={onUsersChangeHandler} />
         <TextArea placeholder="Пользователи / каналы" autoSize={{ minRows: 2, maxRows: 6 }} onChange={onQueryChangeHandler} />
-        <Button type='primary' onClick={() => dispatch(setUsers(query))} disabled={usersIsFetching} loading={usersIsFetching}>Отправить сообщения</Button>
+        <Button type='primary' onClick={() => dispatch(setUsers(query))} disabled={inProgress} loading={inProgress}>Отправить сообщения</Button>
       </div>
     </section>
   )
