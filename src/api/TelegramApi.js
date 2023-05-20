@@ -39,11 +39,13 @@ class TelegramApi {
   }
 
   async startClient (phoneNumber, password, phoneCode) {
+  // : Promise<[boolean, { firstName: string }]>
+  // {
     let userInfo = {}
     await this.client.start({
       phoneNumber,
       password,
-      phoneCode: () => { return new Promise(resolve => { resolve(phoneCode) }) }
+      phoneCode: async () => { return await new Promise(resolve => { resolve(phoneCode) }) }
     })
       .then(() => {
         localStorage.setItem('session', JSON.stringify(this.client.session.save()))

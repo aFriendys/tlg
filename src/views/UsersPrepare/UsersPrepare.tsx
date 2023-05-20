@@ -1,28 +1,28 @@
-import styles from './UsersPrepare.module.scss'
-
-import { setUsers, setMessage, setQuery, pushUsersDone, resetUsersDone, shiftUser, pushUsersError } from '../../store/appSlice'
+import React, { useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { debounce } from 'lodash'
-
 import { Input, Button } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { useNavigate } from 'react-router-dom'
-import { telegramClient } from '../../api'
-import { useEffect, useRef } from 'react'
-import { sleep } from '../../functions/functions'
+import styles from './UsersPrepare.module.scss'
+
+import { telegramClient } from 'api'
+import { sleep } from 'functions'
+import { type IAppDispatch, setUsers, setMessage, setQuery, pushUsersDone, resetUsersDone, shiftUser, pushUsersError } from '../../store'
+
 const { TextArea } = Input
 
-export function UsersPrepare () {
-  const dispatch = useDispatch()
+export function UsersPrepare (): JSX.Element {
+  const dispatch = useDispatch<IAppDispatch>()
   const navigate = useNavigate()
-  const query = useSelector(({ app }) => app.query)
-  const users = useSelector(({ app }) => app.users)
-  const message = useSelector(({ app }) => app.message)
-  const inProgress = useSelector(({ app }) => app.inProgress)
+  const query: string = useSelector(({ app }: any) => app.query)
+  const users: string[] = useSelector(({ app }: any) => app.users)
+  const message: string = useSelector(({ app }: any) => app.message)
+  const inProgress: boolean = useSelector(({ app }: any) => app.inProgress)
   const running = useRef(false)
 
   useEffect(() => {
-    if (!running.current && users.length) {
+    if (!running.current && users.length > 0) {
       running.current = true
       navigate('/inProgress')
       sendMessages()
@@ -31,15 +31,15 @@ export function UsersPrepare () {
 
   const debouncedHandler = debounce((callback, value) => { dispatch(callback(value)) }, 300)
 
-  function onUsersChangeHandler (e) {
+  function onUsersChangeHandler (e: React.BaseSyntheticEvent): void {
     debouncedHandler(setMessage, e.target.value)
   }
 
-  function onQueryChangeHandler (e) {
+  function onQueryChangeHandler (e: React.BaseSyntheticEvent): void {
     debouncedHandler(setQuery, e.target.value)
   }
 
-  async function sendMessage (user) {
+  async function sendMessage (user: string): Promise<boolean> {
     dispatch(shiftUser())
     try {
       await sleep(300)
@@ -52,7 +52,7 @@ export function UsersPrepare () {
     return true
   }
 
-  async function sendMessages () {
+  async function sendMessages (): Promise<void> {
     let messagesSent = 0
     let messagesError = 0
     const usersToSend = [...users]
@@ -77,7 +77,7 @@ export function UsersPrepare () {
       <div className={styles.inputWrapper}>
         <TextArea placeholder="Сообщение" autoSize={{ minRows: 2, maxRows: 6 }} onChange={onUsersChangeHandler} />
         <TextArea placeholder="Пользователи / каналы" autoSize={{ minRows: 2, maxRows: 6 }} onChange={onQueryChangeHandler} />
-        <Button type='primary' onClick={() => dispatch(setUsers(query))} disabled={inProgress} loading={inProgress}>Отправить сообщения</Button>
+        <Button type='primary' onClick={(): void => { dispatch(setUsers(query)) }} disabled={inProgress} loading={inProgress}>Отправить сообщения</Button>
       </div>
     </section>
   )

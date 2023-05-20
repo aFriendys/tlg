@@ -1,19 +1,30 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
-import { telegramClient } from '../api'
+import { telegramClient } from 'api'
+import { type IApp, type MapReducerPayloads } from 'types'
 
-export const setUsers = createAsyncThunk('appSlice/setUsers', async (query) => {
+type IAppReducers = MapReducerPayloads<IApp, {
+  setInProgress: boolean
+  setMessage: string
+  setQuery: string
+  shiftUser: undefined
+  pushUsersDone: string
+  pushUsersError: string
+  resetUsersDone: undefined
+}>
+
+export const setUsers = createAsyncThunk('appSlice/setUsers', async (query: string): Promise<string[]> => {
   const users = []
 
-  const channels = query.trim().split(' ').filter(query => query.startsWith('https://t.me/')).map(query => query.replace('https://t.me/', ''))
-  users.push(...query.trim().split(' ').filter(query => !query.startsWith('https://t.me/') && !query.startsWith('+') && isNaN(Number(query))))
+  const channels = query.trim().split(' ').filter((query) => query.startsWith('https://t.me/')).map((query) => query.replace('https://t.me/', ''))
+  users.push(...query.trim().split(' ').filter((query) => !query.startsWith('https://t.me/') && !query.startsWith('+') && isNaN(Number(query))))
   for (const channel of channels) {
     users.push(...await telegramClient.getChannelParticipants(channel))
   }
   return users
 })
 
-const appSlice = createSlice({
+export const appSlice = createSlice<IApp, IAppReducers>({
   name: 'app',
   initialState: {
     message: '',
@@ -54,15 +65,13 @@ const appSlice = createSlice({
     }
 
   },
-  extraReducers: {
-    [setUsers.pending]: (state) => {
-      state.inProgress = true
-    },
-    [setUsers.fulfilled]: (state, { payload }) => {
+  extraReducers: (builder) => {
+    builder.addCase(setUsers.pending, (state) => { state.inProgress = true })
+    builder.addCase(setUsers.fulfilled, (state, { payload }) => {
       state.query = ''
       state.users = payload
       state.inProgress = false
-    }
+    })
   }
 })
 
