@@ -6,7 +6,7 @@ import styles from './Header.module.scss'
 
 export function Header (): JSX.Element {
   const navigate = useNavigate()
-  const name = useSelector(({ user }: { user: IUser }): string => user.name)
+  const name = useSelector<{ user: IUser }, string>(({ user: { name } }) => name)
   const onLogoutHandler = (): void => {
     localStorage.removeItem('session')
     navigate('/')

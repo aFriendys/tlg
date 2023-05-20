@@ -5,13 +5,11 @@ type IUserReducers = MapReducerPayloads<IUser, {
   setUserName: string
 }>
 
-const initialState: IUser = {
-  name: ''
-}
-
 export const userSlice = createSlice<IUser, IUserReducers>({
   name: 'user',
-  initialState,
+  initialState: {
+    name: ''
+  },
   reducers: {
     setUserName: (state, { payload }) => {
       state.name = payload

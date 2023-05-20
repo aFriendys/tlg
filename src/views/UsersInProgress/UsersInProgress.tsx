@@ -4,17 +4,18 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { setInProgress } from 'store'
+import { type IApp } from 'types'
 
 import styles from './UsersInProgress.module.scss'
 
 const { TextArea } = Input
 
-export function UsersInProgress () {
+export function UsersInProgress (): JSX.Element {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const usersInProgress = useSelector(({ app }) => app.users)
-  const usersDone = useSelector(({ app }) => app.usersDone)
-  const usersError = useSelector(({ app }) => app.usersError)
+  const usersInProgress = useSelector<{ app: IApp }, string[]>(({ app: { users } }) => users)
+  const usersDone = useSelector<{ app: IApp }, string[]>(({ app: { usersDone } }) => usersDone)
+  const usersError = useSelector<{ app: IApp }, string[]>(({ app: { usersError } }) => usersError)
 
   useEffect(() => {
     dispatch(setInProgress(false))
@@ -50,8 +51,8 @@ export function UsersInProgress () {
         <Button
           type="primary"
           className={styles.button}
-          disabled={usersInProgress.length}
-          loading={usersInProgress.length}
+          disabled={usersInProgress.length > 0}
+          loading={usersInProgress.length > 0}
           onClick={() => {
             navigate('/prepare')
           }}
