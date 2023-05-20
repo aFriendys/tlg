@@ -1,17 +1,24 @@
 import { ArrowRightOutlined } from '@ant-design/icons'
 import { Input, Button } from 'antd'
-import { useSelector } from 'react-redux'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { setInProgress } from 'store'
 
 import styles from './UsersInProgress.module.scss'
 
 const { TextArea } = Input
 
 export function UsersInProgress () {
+  const dispatch = useDispatch()
   const navigate = useNavigate()
   const usersInProgress = useSelector(({ app }) => app.users)
   const usersDone = useSelector(({ app }) => app.usersDone)
   const usersError = useSelector(({ app }) => app.usersError)
+
+  useEffect(() => {
+    dispatch(setInProgress(false))
+  }, [])
 
   return (
     <section className={styles.section}>
