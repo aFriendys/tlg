@@ -1,5 +1,6 @@
 import { TelegramClient, Api } from 'telegram'
 import { type UserAuthParams } from 'telegram/client/auth'
+import { RPCError } from 'telegram/errors'
 import { StringSession } from 'telegram/sessions'
 import { type TStartClientResult } from 'types'
 
@@ -34,7 +35,7 @@ class TelegramApi {
 
       return [true, userInfo.users[0]]
     } catch (error) {
-      if (error instanceof Api.RpcError) return [false, error]
+      if (error instanceof RPCError) return [false, error]
     }
     return [false, { firstName: undefined }]
   }
@@ -47,8 +48,6 @@ class TelegramApi {
   }
 
   async startClient ({ phoneNumber, password, phoneCode }: { phoneNumber: UserAuthParams['phoneNumber'], password: UserAuthParams['password'], phoneCode: string }): Promise<TStartClientResult> {
-  // : Promise<[boolean, { firstName: string }]>
-  // {
     await this.client?.start({
       phoneNumber,
       password,
@@ -68,7 +67,7 @@ class TelegramApi {
       )
       return [true, userInfo?.users[0]]
     } catch (error) {
-      if (error instanceof Api.RpcError) return [false, error]
+      if (error instanceof RPCError) return [false, error]
     }
     return [false, { firstName: undefined }]
   }

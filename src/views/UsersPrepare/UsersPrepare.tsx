@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import { type BaseSyntheticEvent, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { debounce } from 'lodash'
 import { Input, Button } from 'antd'
@@ -8,17 +8,17 @@ import styles from './UsersPrepare.module.scss'
 
 import { telegramClient } from 'api'
 import { sleep } from 'functions'
-import { type IAppDispatch, setUsers, setMessage, setQuery, pushUsersDone, resetUsersDone, shiftUser, pushUsersError } from '../../store'
+import { type IAppDispatch, setUsers, setMessage, setQuery, pushUsersDone, resetUsersDone, shiftUser, pushUsersError, type IRootState } from 'store'
 
 const { TextArea } = Input
 
 export function UsersPrepare (): JSX.Element {
   const dispatch = useDispatch<IAppDispatch>()
   const navigate = useNavigate()
-  const query: string = useSelector(({ app }: any) => app.query)
-  const users: string[] = useSelector(({ app }: any) => app.users)
-  const message: string = useSelector(({ app }: any) => app.message)
-  const inProgress: boolean = useSelector(({ app }: any) => app.inProgress)
+  const query = useSelector<IRootState, string>(({ app: { query } }) => query)
+  const users = useSelector<IRootState, string[]>(({ app: { users } }) => users)
+  const message = useSelector<IRootState, string>(({ app: { message } }) => message)
+  const inProgress = useSelector<IRootState, boolean>(({ app: { inProgress } }) => inProgress)
   const running = useRef(false)
 
   useEffect(() => {
@@ -31,11 +31,11 @@ export function UsersPrepare (): JSX.Element {
 
   const debouncedHandler = debounce((callback, value) => { dispatch(callback(value)) }, 300)
 
-  function onUsersChangeHandler (e: React.BaseSyntheticEvent): void {
+  function onUsersChangeHandler (e: BaseSyntheticEvent): void {
     debouncedHandler(setMessage, e.target.value)
   }
 
-  function onQueryChangeHandler (e: React.BaseSyntheticEvent): void {
+  function onQueryChangeHandler (e: BaseSyntheticEvent): void {
     debouncedHandler(setQuery, e.target.value)
   }
 

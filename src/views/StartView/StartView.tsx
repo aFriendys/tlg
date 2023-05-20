@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import { Input, Button, Modal } from 'antd'
 import { useNavigate } from 'react-router-dom'
-import React, { useEffect, useState } from 'react'
+import { type BaseSyntheticEvent, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import styles from './StartView.module.scss'
 
 import { useLocalStorage } from 'hooks'
 import { telegramClient } from 'api'
-import { type IAppDispatch, setInProgress, setUserName } from 'store'
+import { type IAppDispatch, setInProgress, setUserName, type IRootState } from 'store'
 
 export function StartView (): JSX.Element {
   const dispatch = useDispatch<IAppDispatch>()
@@ -19,12 +19,13 @@ export function StartView (): JSX.Element {
   const [code, setCode] = useState<string>('')
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false)
   const navigate = useNavigate()
-  const inProgress = useSelector(({ app }: { app: any }) => app.inProgress)
+  const inProgress = useSelector<IRootState, boolean>(({ app: { inProgress } }) => inProgress)
+
   const onSubmitHandler = async (): Promise<void> => {
     dispatch(setInProgress(true))
     await telegramClient.createClient(apiId, apiHash)
     await telegramClient.sendCode(phone)
-    setModalIsOpen(() => true)
+    setModalIsOpen((): boolean => true)
   }
 
   const onClientStartHandler = async (): Promise<void> => {
@@ -72,13 +73,13 @@ export function StartView (): JSX.Element {
             size="large"
             placeholder="App id"
             value={apiId}
-            onChange={(e: React.BaseSyntheticEvent): void => { setApiId(e.target.value) }}
+            onChange={(e: BaseSyntheticEvent): void => { setApiId(e.target.value) }}
           />
           <Input
             size="large"
             placeholder="App hash"
             value={apiHash}
-            onChange={(e: React.BaseSyntheticEvent): void => { setApiHash(e.target.value) }}
+            onChange={(e: BaseSyntheticEvent): void => { setApiHash(e.target.value) }}
           />
         </div>
         <div className={styles.inputWrapper}>
@@ -87,13 +88,13 @@ export function StartView (): JSX.Element {
             size="large"
             placeholder="Номер телефона"
             value={phone}
-            onChange={(e: React.BaseSyntheticEvent): void => { setPhone(e.target.value.replaceAll(' ', '')) }}
+            onChange={(e: BaseSyntheticEvent): void => { setPhone(e.target.value.replaceAll(' ', '')) }}
           />
           <Input
             size="large"
             placeholder="Пароль"
             value={password}
-            onChange={(e: React.BaseSyntheticEvent): void => { setPassword(e.target.value) }}
+            onChange={(e: BaseSyntheticEvent): void => { setPassword(e.target.value) }}
           />
         </div>
         <Button
@@ -125,7 +126,7 @@ export function StartView (): JSX.Element {
             size="large"
             placeholder="Код подтверждения"
             value={code}
-            onChange={(e: React.BaseSyntheticEvent): void => { setCode(e.target.value) }}
+            onChange={(e: BaseSyntheticEvent): void => { setCode(e.target.value) }}
           />
           <Button
             style={{ width: '100%' }}

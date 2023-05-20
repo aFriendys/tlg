@@ -3,19 +3,18 @@ import { Input, Button } from 'antd'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { setInProgress } from 'store'
-import { type IApp } from 'types'
+import { type IRootState, setInProgress, type IAppDispatch } from 'store'
 
 import styles from './UsersInProgress.module.scss'
 
 const { TextArea } = Input
 
 export function UsersInProgress (): JSX.Element {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<IAppDispatch>()
   const navigate = useNavigate()
-  const usersInProgress = useSelector<{ app: IApp }, string[]>(({ app: { users } }) => users)
-  const usersDone = useSelector<{ app: IApp }, string[]>(({ app: { usersDone } }) => usersDone)
-  const usersError = useSelector<{ app: IApp }, string[]>(({ app: { usersError } }) => usersError)
+  const usersInProgress = useSelector<IRootState, string[]>(({ app: { users } }) => users)
+  const usersDone = useSelector<IRootState, string[]>(({ app: { usersDone } }) => usersDone)
+  const usersError = useSelector<IRootState, string[]>(({ app: { usersError } }) => usersError)
 
   useEffect(() => {
     dispatch(setInProgress(false))
