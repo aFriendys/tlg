@@ -29,12 +29,10 @@ export function StartView (): JSX.Element {
 
   const onClientStartHandler = async (): Promise<void> => {
     const [connected, { firstName }] = await telegramClient.startClient(
-      phone,
-      password,
-      code
-    )
+      { phoneNumber: phone, password, phoneCode: code })
     if (connected) {
       dispatch(setUserName(firstName))
+      dispatch(setInProgress(false))
       navigate('/prepare')
     } else {
       setModalIsOpen((): boolean => false)
