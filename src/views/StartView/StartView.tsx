@@ -103,7 +103,7 @@ export function StartView (): JSX.Element {
           style={{ width: '100%' }}
           onClick={onSubmitHandler}
           disabled={
-            apiId.length !== 0 || apiHash.length !== 0 || phone.length !== 0 || inProgress
+            apiId.length === 0 || apiHash.length === 0 || phone.length === 0 || inProgress
           }
           loading={inProgress}
         >
@@ -133,7 +133,7 @@ export function StartView (): JSX.Element {
             style={{ width: '100%' }}
             type="primary"
             onClick={onClientStartHandler}
-            disabled={code.length !== 0}
+            disabled={code.length === 0}
           >
             Отправить
           </Button>

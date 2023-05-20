@@ -32,7 +32,7 @@ export const appSlice = createSlice<IApp, IAppReducers>({
     users: [],
     usersDone: [],
     usersError: [],
-    inProgress: true
+    inProgress: false
   },
   reducers: {
     setInProgress: (state, { payload }) => {
